@@ -53,14 +53,14 @@ let randomFloat = pstr "random" |>> (fun _ -> rangeFloat)
     
     (*Outlines two options for the user: specify a size: "0.5 size" or set random "random size"*)
 let size = 
-    pleft (numFloat <|> randomFloat) (pstr "size")
+    pleft (pad (numFloat <|> randomFloat)) (pad (pstr "size"))
 (*END*)
 
 
 
 let grove = pseq (pseq (pad treecount) (pad treeType) (fun (x, y) -> (x,y))) (pad size) (fun (a, b) -> {num = fst a; kind = snd a; size = b})
 
-let forest = pseq (pmany0 (pad (pleft grove (pchar ',')))) (pmany1 (pad grove)) (fun (x, y) -> x @ y)
+let forest = pseq (pmany0 (pad (pleft grove (pchar ',')))) (pad grove) (fun (x, y) -> x @ [y])
 
 let landscape = pseq (pleft season (pchar ':')) (pad forest) (fun (x, y)-> {season = x; forest = y})
 

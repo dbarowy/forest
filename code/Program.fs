@@ -1,18 +1,25 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
-open cs334
-open Combinator
+open System
+open Evaluator
+open Parser
 
 [<EntryPoint>]
 
 let main argv = 
 
-    let s = "Usage: dotnet run <polynomial>\n\twhere <polynomial> has the form <c_1>x^<e_1> + ... + <c_n>x^<e_n>,\n\tfor example, \"3x^5 + -5x^2\""
+    let s = "Usage: <season>: <n> <treetype> <size> size, ...
+        \n Note that <size> is 'random' or a float (e.g. '1.0'), and must be from 0.25 - 2"
 
-    (*Fail not only one arguement is inputted*)
+    (*Fail if not only one arguement is inputted*)
     if Array.length argv <> 1 then failwith s
     
     match parse argv[0] with
-    | Some ast -> printfn "%A" (prettyprint ast)
-    | None -> printfn "%s" s
-    0 
+    | Some ast -> 
+        let svg = (eval ast)
+        IO.File.WriteAllText("forest.svg", svg)
+        printfn "%s" svg
+        0
+    | None ->
+        printfn "%s" s
+        1
 
