@@ -10,11 +10,11 @@ type Season =
 | Spring
 | Fall
 
-type Grove = {kind: Tree; size: float; num: int}
+type Grove = {num: int; kind: Tree; size: float}
 
 type Forest = Grove list
 
-type Landscape = {s: Season; f: Forest}
+type Landscape = {season: Season; forest: Forest}
 
 let nMIN = 1
 let nMAX = 20

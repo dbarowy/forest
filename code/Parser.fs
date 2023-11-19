@@ -8,9 +8,6 @@ let r = new Random()
 (*Pad lets us have unlimited whitespaces between phrases*)
 let pad p = pbetween pws0 p pws0 
 
-let expr, exprImpl = recparser()
-
-
 (*treeType and season matches typed string to the avaliable options*)
 let treeType = 
     (pstr "maple" |>> (fun _ -> Maple)) <|>
@@ -60,21 +57,20 @@ let size =
 (*END*)
 
 
-(*
-let treefit = pseq (pseq (treecount treeType (fun (x, y) -> (x,y))) size (fun (a, b) -> {kind = a.first; num = a.second; size = b}))
 
-let grove = pseq treecount treeType size
-let term : Parser<Term> = pseq (pleft posneg (pchar 'x')) (pright (pchar '^') posneg) (fun (x, y) -> {coeff = x ; exp = y })
+let grove = pseq (pseq (pad treecount) (pad treeType) (fun (x, y) -> (x,y))) (pad size) (fun (a, b) -> {num = fst a; kind = snd a; size = b})
 
+let forest = pseq (pmany0 (pad (pleft grove (pchar ',')))) (pmany1 (pad grove)) (fun (x, y) -> x @ y)
 
-exprImpl := 
-    pseq
-        (pmany0 (pleft (term) (pstr " + ") ) )
-        (term |>> (fun i -> [i]))
-        (fun (x, y) -> List.append x y)
+let landscape = pseq (pleft season (pchar ':')) (pad forest) (fun (x, y)-> {season = x; forest = y})
 
-*)
 
 (*checks that the parsing ends at the end of file marker*)
-let grammar = pleft expr peof
+let grammar = pleft landscape peof
+
+let parse (input: string) : Landscape option =
+    let i = prepare input
+    match grammar i with
+    | Success(ast, _) -> Some ast
+    | Failure(_,_) -> None
 
