@@ -1,1 +1,1 @@
-fall: 15 birch, 1 pine 2 size, 3 oak 1.5 size
+fall: 15 birch 1.0 size, 1 pine 2.0 size, 3 oak 1.5 size
