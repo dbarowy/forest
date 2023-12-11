@@ -53,7 +53,7 @@ let randomFloat = pstr "random" |>> (fun _ -> rangeFloat)
     
     (*Outlines two options for the user: specify a size: "0.5 size" or set random "random size"*)
 let size = 
-    pleft (pad (numFloat <|> randomFloat)) (pad (pstr "size"))
+    pleft (pad (numFloat <|> randomFloat)) (pad (pstr "size") <|> (pstr ""))
 (*END*)
 
 
