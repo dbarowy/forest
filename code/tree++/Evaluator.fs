@@ -22,10 +22,8 @@ let evalSeason (season: Season) : string =
 (* Evaluates the TreeKind and obtains the matching svg file with tree graphic data for that kind 
    Also determines if the fall or spring file should be used *)
 let evalKind (kind: Tree, season: Season) =
-    printf("here")
     match season with
     |Fall ->
-        printf("here2")
         match kind with
         | Maple -> "fallmaple.svg"
         | Oak -> "falloak.svg"
@@ -68,6 +66,3 @@ let eval (landscape: Landscape) : string =
     " xmlns:bx=\"https://boxy-svg.com\">\n" +
     (evalLandscape landscape)
     + "</svg>\n"
-
-
-
