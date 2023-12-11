@@ -1,1 +1,1 @@
-spring: 10 oak, 3 maple 2 size, 1 pine 0.5 size, 8-12 birch
+spring: 8-10 oak random size, 3 maple 0.5 size, 8-10 oak random size
