@@ -15,6 +15,7 @@ let treeType =
     (pstr "birch" |>> (fun _ -> Birch)) <|>
     (pstr "pine" |>> (fun _ -> Pine))
 
+(* Parse the season, returning the proper Season object *)
 let season = 
     (pstr "fall" |>> (fun _ -> Fall)) <|>
     (pstr "spring" |>> (fun _ -> Spring))
@@ -57,17 +58,30 @@ let size =
 (*END*)
 
 
+(* Parses the number, size, and type of a given grove in the format:
+   # TreeType (# size), where size is optional *)
+let grove = (pseq
+    (pseq (pad treecount) (pad treeType) (fun (x, y) -> (x,y))) 
+    ((pad size) <|> (pstr "" |>> (fun _ -> 1.0))) 
+    (fun (a, b) -> {num = fst a; kind = snd a; size = b}))
 
-let grove = pseq (pseq (pad treecount) (pad treeType) (fun (x, y) -> (x,y))) (pad size) (fun (a, b) -> {num = fst a; kind = snd a; size = b})
+(* Parses the full list of groves separated by commas, putting them into a list *)
+let forest = (pseq 
+    (pmany0 (pad (pleft grove (pchar ',')))) 
+    (pad grove) 
+    (fun (x, y) -> x @ [y]))
 
-let forest = pseq (pmany0 (pad (pleft grove (pchar ',')))) (pad grove) (fun (x, y) -> x @ [y])
-
-let landscape = pseq (pleft season (pchar ':')) (pad forest) (fun (x, y)-> {season = x; forest = y})
+(* Parses the full landscape, i.e. the season and all the groves of the forest. *)
+let landscape = (pseq
+    (pleft season (pchar ':'))
+    (pad forest)
+    (fun (x, y)-> {season = x; forest = y}))
 
 
 (*checks that the parsing ends at the end of file marker*)
 let grammar = pleft landscape peof
 
+(* Determine if parsing was successful, and return Landscape if it was *)
 let parse (input: string) : Landscape option =
     let i = prepare input
     match grammar i with
